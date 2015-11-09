@@ -45,9 +45,6 @@ NSString * const KILabelLinkKey = @"link";
 // Dictionary of detected links and their ranges in the text
 @property (nonatomic, copy) NSArray *linkRanges;
 
-// State used to trag if the user has dragged during a touch
-@property (nonatomic, assign) BOOL isTouchMoved;
-
 // During a touch, range of text that is displayed as selected
 @property (nonatomic, assign) NSRange selectedRange;
 
@@ -632,8 +629,6 @@ NSString * const KILabelLinkKey = @"link";
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    _isTouchMoved = NO;
-    
     // Get the info for the touched link if there is one
     NSDictionary *touchedLink;
     CGPoint touchLocation = [[touches anyObject] locationInView:self];
@@ -652,22 +647,12 @@ NSString * const KILabelLinkKey = @"link";
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesMoved:touches withEvent:event];
-    
-    _isTouchMoved = YES;
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesEnded:touches withEvent:event];
-    
-    // If the user dragged their finger we ignore the touch
-    if (_isTouchMoved)
-    {
-        self.selectedRange = NSMakeRange(0, 0);
-        
-        return;
-    }
-    
+  
     // Get the info for the touched link if there is one
     NSDictionary *touchedLink;
     CGPoint touchLocation = [[touches anyObject] locationInView:self];
@@ -684,8 +669,12 @@ NSString * const KILabelLinkKey = @"link";
     else
     {
         [super touchesBegan:touches withEvent:event];
+        if (_noLinkTapHandler)
+        {
+            _noLinkTapHandler(self, nil, NSMakeRange(0, 0));
+        }
     }
-    
+  
     self.selectedRange = NSMakeRange(0, 0);
 }
 

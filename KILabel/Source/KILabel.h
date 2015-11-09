@@ -176,6 +176,11 @@ IB_DESIGNABLE
  */
 @property (nullable, nonatomic, copy) KILinkTapHandler urlLinkTapHandler;
 
+/**
+ * Callback block when no link was tapped.
+ */
+@property (nullable, nonatomic, copy) KILinkTapHandler noLinkTapHandler;
+
 /** ****************************************************************************************** **
  * @name Geometry
  ** ****************************************************************************************** **/
